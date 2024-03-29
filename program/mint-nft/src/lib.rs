@@ -3,7 +3,7 @@ use {
         account_info::{next_account_info, AccountInfo}, 
         entrypoint, 
         entrypoint::ProgramResult, 
-        msg, 
+        msg, program_error::ProgramError,
         native_token::LAMPORTS_PER_SOL,
         program::invoke,
         pubkey::Pubkey,
@@ -17,6 +17,13 @@ use {
     },
 };
 
+/// 1st signer.  
+/// Base58 repr of the address 32 bytes as &str.     
+pub const ADMIN_PUBKEY_STR: &str = env!("ADMIN_PUBKEY_STR");
+
+/// 2nd signer.
+/// Base58 repr of the address 32 bytes as &str.    
+pub const SECOND_PUBKEY_STR: &str = env!("SECOND_PUBKEY_STR");
 
 entrypoint!(process_instruction);
 
@@ -36,7 +43,24 @@ fn process_instruction(
     let system_program = next_account_info(accounts_iter)?;
     let token_program = next_account_info(accounts_iter)?;
     let associated_token_program = next_account_info(accounts_iter)?;
-    
+    let second_signer = next_account_info(accounts_iter)?;
+
+    // SO, the whole point of multisig, is that here we look at our signers
+    // and we compare them with our known accounts (or pubkeys in a data account)
+
+    // Comparing the bs58 strings of the pubkeys 
+	if mint_authority.key.to_string() != *ADMIN_PUBKEY_STR || 
+        !mint_authority.is_signer {
+        msg!("Unapproved Admin/Mint Auth");
+        return Err(ProgramError::MissingRequiredSignature);
+    } 
+
+	if second_signer.key.to_string() != *SECOND_PUBKEY_STR || 
+        !second_signer.is_signer {
+        msg!("Unapproved Second Signer");
+        return Err(ProgramError::MissingRequiredSignature);
+    } 
+
     msg!("Creating mint account...");
     msg!("Mint: {}", mint.key);
     invoke(
