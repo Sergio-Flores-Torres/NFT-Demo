@@ -1,12 +1,9 @@
 # NFT-Demo
 A Solana based on-chain NFT tech demo
 
-Program owner
-8KwDbhAQGa2Upf9RVVHERDsvYvfY99E1xWHYXrz2RxUR - appowner.json
+Admin is is mint & program auth & payer
+ADMIN_PUBKEY_STR = "F4bLxQZH9NigHvm9U6JmrFoCGBS9y4FxLrN2Lq5q2Ejv"
+SECOND_PUBKEY_STR = "CkSR6dnpXvXGBQQayYEx9AzFStnEdg8TKp5ybKgTLa1L"
 
 Program ID Devnet
-J3YVmzu9vyWuGqZdUMTa7SRpSA5VaERYtVBvMy11Ncum
-
-Useful
-cargo build-bpf --manifest-path=./Cargo.toml --bpf-out-dir=./dist/program
-solana program deploy --keypair=../../appowner.json dist/program/mint_nft.so
+HprnVFgrPg8YYo88EjMS7ZiWv35XEDSnhz4nRWvxGVUD
